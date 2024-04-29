@@ -38,6 +38,7 @@ gameScene.preload = function () {
     this.load.audio('Correct', 'assets/sound/Correct_Ans_Sfx.wav');
     this.load.audio('Wrong', 'assets/sound/Wrong_Ans_Sfx.wav');
     this.load.audio('Play', 'assets/sound/Play_Button_Sfx.wav');
+    this.load.audio('Reset', 'assets/sound/Reset_Button_Sfx.wav');
 };
 
 gameScene.create = function () {
@@ -250,7 +251,7 @@ gameScene.playNotes = function () {
 
     if (index === undefined) {
                  
-        this.sound.play('Play');
+        this.sound.play('Reset');
         flashButtons();
         turnOffLed();
         turnOnLed();
