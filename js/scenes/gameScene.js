@@ -6,7 +6,7 @@ gameScene.init = function () {
     this.gWidth = this.game.config.width;
     this.gHeight = this.game.config.height;
     this.s = this.gWidth > 640 ? 2 : 1;
-    console.log(this.gWidth, this.gHeight, this.s)
+   // console.log(this.gWidth, this.gHeight, this.s)
     // if (this.sys.game.device.os.desktop) {
     //     console.log("desktop")
     //     this.s = 2;
@@ -62,18 +62,18 @@ gameScene.create = function () {
     this.createBtns();
 
     //create LEDs
-    this.createLeds();
+    //this.createLeds();
 
     // this.initGame();
 };
 
 gameScene.createScene = function () {
     let bgImage = this.s > 1 ? 'bg2' : 'bg';
-    let spriteScale = this.s > 1 ? 0.92 : 0.45;
-    let xLeft = 263;
-    let xRight = 376;
-    let yTop = 102.5;
-    let yBottom = 225;
+    let spriteScale = this.s > 1 ? 1.125 : 0.45;
+    let xLeft = 131;
+    let xRight = 270;
+    let yTop = 106;
+    let yBottom = 257;
 
     let bg = this.add.image(0, 0, bgImage).setOrigin(0);
     let spriteImages = ['Timmy', 'Sophia', 'Frank', 'Armando'];
@@ -116,9 +116,9 @@ gameScene.createScene = function () {
 gameScene.createText = function () {
     let styleDark = { fontFamily: 'cutedino', fontSize: 20 * this.s, color: '#000000', lineSpacing: -10 * this.s };
 
-    this.txtScore = this.add.text(495 * this.s, 175 * this.s, '--', styleDark)
+    this.txtScore = this.add.text(440 * this.s, 265 * this.s, '--', styleDark)
         .setOrigin(0.5, 0.5);
-    this.txtHighScore = this.add.text(580 * this.s, 175 * this.s, `${this.highScore}`, styleDark).setColor('#ffffff')
+    this.txtHighScore = this.add.text(540 * this.s, 265 * this.s, `${this.highScore}`, styleDark).setColor('#ffffff')
         .setOrigin(0.5, 0.5)
         .setAlpha(0.5);
 
@@ -145,7 +145,7 @@ gameScene.createText = function () {
 }
 
 gameScene.createBtns = function () {
-    this.btnPlay = this.add.sprite(500 * this.s, 50 * this.s, 'btplay').setInteractive();
+    this.btnPlay = this.add.sprite(400 * this.s, 50 * this.s, 'btplay').setInteractive();
     this.btnPlay.setScale(0.08 * this.s);
     this.btnPlay.on('pointerdown', () => {
         if (!this.onGame) {
@@ -216,7 +216,7 @@ gameScene.createLeds = function () {
 
 gameScene.initGame = function () {
     let t = this;
-    t.turnOffLed(this.ledGameOver);
+    //t.turnOffLed(this.ledGameOver);
     t.score = -1;
     t.upScore();
     t.onGame = true;
@@ -227,7 +227,7 @@ gameScene.endGame = function () {
     let t = this;
     t.onGame = false;
     t.disableButtons();
-    t.pulseLed(this.ledGameOver);
+    //t.pulseLed(this.ledGameOver);
     t.notes = [Phaser.Math.RND.integerInRange(0, 3)];
     t.pulseButtons();
 
@@ -237,8 +237,8 @@ gameScene.endGame = function () {
         if (t.score > t.highScore) {
             t.setHighScore(t.score);
         }
-        this.turnOffLed(this.ledCpu);
-        this.turnOffLed(this.ledPlayer);
+        //this.turnOffLed(this.ledCpu);
+        //this.turnOffLed(this.ledPlayer);
         t.score = 0;
         // if (t.btPlay.alpha == 1) {
         //     t.btPlay.toggle();
@@ -252,8 +252,8 @@ gameScene.playNotes = function () {
     let currentNote = this.currentNote;
     let clicked = this.clicked.bind(this, true);
     let flashButtons = this.flashButtons.bind(this);
-    let turnOffLed = this.turnOffLed.bind(this, this.ledCpu);
-    let turnOnLed = this.turnOnLed.bind(this, this.ledPlayer);
+    //let turnOffLed = this.turnOffLed.bind(this, this.ledCpu);
+    //let turnOnLed = this.turnOnLed.bind(this, this.ledPlayer);
     let playerTurn = this.playerTurn.bind(this);
 
     let index = notes[currentNote];
@@ -262,8 +262,8 @@ gameScene.playNotes = function () {
 
         this.sound.play('Reset');
         flashButtons();
-        turnOffLed();
-        turnOnLed();
+       // turnOffLed();
+        //turnOnLed();
         playerTurn();
     } else {
         clicked(index);
@@ -317,7 +317,7 @@ gameScene.clicked = function (isMachine, index) {
     else {
         if (!this.checkNote()) {
             this.sound.play('Wrong');
-            this.turnOffLed(this.ledPlayer);
+           // this.turnOffLed(this.ledPlayer);
             this.endGame();
             return;
         }
@@ -333,8 +333,8 @@ gameScene.clicked = function (isMachine, index) {
             }, 400);
             setTimeout(() => {
                 if (!this.onGame) return;
-                this.turnOffLed(this.ledPlayer);
-                this.turnOnLed(this.ledCpu);
+               // this.turnOffLed(this.ledPlayer);
+                //this.turnOnLed(this.ledCpu);
                 this.machineTurn();
             }, 600);
         }
