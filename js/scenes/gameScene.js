@@ -6,6 +6,7 @@ gameScene.init = function () {
     this.gWidth = this.game.config.width;
     this.gHeight = this.game.config.height;
     this.s = this.gWidth > 640 ? 2 : 1;
+    this.s = 2;
 
     this.notes = [0];
     this.noteIndex = 0;
