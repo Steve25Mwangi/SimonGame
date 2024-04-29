@@ -10,8 +10,7 @@ function runGame(width, height) {
       height: height,
       orientation: Phaser.Scale.LANDSCAPE
   },
-    scene: gameScene,
-    debug: true
+    scene: gameScene
   };
 
   new Phaser.Game(config);
