@@ -6,7 +6,15 @@ gameScene.init = function () {
     this.gWidth = this.game.config.width;
     this.gHeight = this.game.config.height;
     this.s = this.gWidth > 640 ? 2 : 1;
-    this.s = 2;
+
+    if (this.sys.game.device.os.desktop) {
+        console.log("desktop")
+        this.s = 2;
+    }
+    else {
+        console.log("mobile")
+        this.s = 1;
+    }
 
     this.notes = [0];
     this.noteIndex = 0;
@@ -48,13 +56,13 @@ gameScene.create = function () {
     this.createScene();
 
     //create Text
-    this.createText();    
+    this.createText();
 
     //createBtns
     this.createBtns();
 
     //create LEDs
-    this.createLeds();    
+    this.createLeds();
 
     // this.initGame();
 };
@@ -112,7 +120,7 @@ gameScene.createText = function () {
     this.txtHighScore = this.add.text(580 * this.s, 175 * this.s, `${this.highScore}`, styleDark).setColor('#ffffff')
         .setOrigin(0.5, 0.5)
         .setAlpha(0.5);
-    
+
     //text Tweens
     this.twScore = this.tweens.add({
         targets: this.txtScore,
@@ -141,8 +149,8 @@ gameScene.createBtns = function () {
     this.btnPlay.on('pointerdown', () => {
         if (!this.onGame) {
             this.initGame();
-               //play start audio
-               this.sound.play('Play');
+            //play start audio
+            this.sound.play('Play');
         }
         else {
             this.endGame();
@@ -160,14 +168,14 @@ gameScene.createLeds = function () {
 
     let xPos = 69 * this.s;
     this.ledPlayer = this.add.image(xPos, 158 * this.s, 'ledGreen')
-    .setScale(0.3 * this.s)
-    .setAlpha(0);
+        .setScale(0.3 * this.s)
+        .setAlpha(0);
     this.ledCpu = this.add.image(xPos, 186 * this.s, 'ledGreen')
-    .setScale(0.3 * this.s)
-    .setAlpha(0);
+        .setScale(0.3 * this.s)
+        .setAlpha(0);
     this.ledGameOver = this.add.image(xPos, 209 * this.s, 'ledRed')
-    .setScale(0.3 * this.s)
-    .setAlpha(0);
+        .setScale(0.3 * this.s)
+        .setAlpha(0);
 
     //led tweens
     const ledTargets = [this.ledPlayer, this.ledCpu, this.ledGameOver];
@@ -250,7 +258,7 @@ gameScene.playNotes = function () {
     let index = notes[currentNote];
 
     if (index === undefined) {
-                 
+
         this.sound.play('Reset');
         flashButtons();
         turnOffLed();
@@ -291,12 +299,16 @@ gameScene.disableButtons = function () {
 gameScene.clicked = function (isMachine, index) {
 
     this.lastNote = index;
-    this.buttons[index].tween.play();
+    if (this.buttons[index].tween.isPlaying()) {
+        this.buttons[index].tween.restart();
+    } else {
+        this.buttons[index].tween.play();
+    }
     if (isMachine) {
         this.sound.play('Pad' + (index + 1));
         setTimeout(() => {
             if (!this.onGame) return;
-            
+
             this.currentNote++;
             this.playNotes();
         }, 600);
@@ -308,7 +320,7 @@ gameScene.clicked = function (isMachine, index) {
             this.endGame();
             return;
         }
-         
+
         this.sound.play('Pad' + (index + 1));
         this.noteIndex++;
         if (this.noteIndex > this.notes.length - 1) {
@@ -347,27 +359,30 @@ gameScene.setHighScore = function (score) {
     t.twHighScore.play();
 }
 
-gameScene.flashButtons = function () {    
+gameScene.flashButtons = function () {
     this.buttons.forEach(bt => {
-
         if (bt.tween.isPlaying()) {
             console.log('flash was playing')
-            bt.tween.restart();            
+            bt.tween.restart();
         } else {
             bt.tween.play();
         }
     });
 }
 
-gameScene.pulseButtons = function () {    
+gameScene.pulseButtons = function () {
     this.buttons.forEach(bt => {
+        if (bt.tween.isPlaying()) {
+            bt.tween.pause();
+            bt.alpha = 0.1;
+        }
         if (bt.twpulses.isPlaying()) {
             console.log('pulses was playing')
             bt.twpulses.restart();
         }
         else {
-            bt.twpulses.play();   
-        }        
+            bt.twpulses.play();
+        }
     });
 }
 
