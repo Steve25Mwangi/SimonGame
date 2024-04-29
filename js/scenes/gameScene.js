@@ -28,6 +28,15 @@ gameScene.preload = function () {
     this.load.image('btreset', 'assets/images/Retry.png');
     this.load.image('ledGreen', 'assets/images/ledGreen.png');
     this.load.image('ledRed', 'assets/images/ledRed.png');
+
+    //load sound files
+    this.load.audio('Pad1', 'assets/sound/Pad_1.wav');
+    this.load.audio('Pad2', 'assets/sound/Pad_2.wav');
+    this.load.audio('Pad3', 'assets/sound/Pad_3.wav');
+    this.load.audio('Pad4', 'assets/sound/Pad_4.wav');
+    this.load.audio('Correct', 'assets/sound/Correct_Ans_Sfx.wav');
+    this.load.audio('Wrong', 'assets/sound/Wrong_Ans_Sfx.wav');
+    this.load.audio('Play', 'assets/sound/Play_Button_Sfx.wav');
 };
 
 gameScene.create = function () {
@@ -130,6 +139,8 @@ gameScene.createBtns = function () {
     this.btnPlay.on('pointerdown', () => {
         if (!this.onGame) {
             this.initGame();
+               //play start audio
+               this.sound.play('Play');
         }
         else {
             this.endGame();
@@ -237,6 +248,8 @@ gameScene.playNotes = function () {
     let index = notes[currentNote];
 
     if (index === undefined) {
+                 
+        this.sound.play('Play');
         flashButtons();
         turnOffLed();
         turnOnLed();
@@ -278,6 +291,7 @@ gameScene.clicked = function (isMachine, index) {
     this.lastNote = index;
     this.buttons[index].tween.play();
     if (isMachine) {
+        this.sound.play('Pad' + (index + 1));
         setTimeout(() => {
             if (!this.onGame) return;
             
@@ -287,17 +301,20 @@ gameScene.clicked = function (isMachine, index) {
     }
     else {
         if (!this.checkNote()) {
+            this.sound.play('Wrong');
             this.turnOffLed(this.ledPlayer);
             this.endGame();
             return;
         }
-
+         
+        this.sound.play('Pad' + (index + 1));
         this.noteIndex++;
         if (this.noteIndex > this.notes.length - 1) {
             this.disableButtons();
             setTimeout(() => {
                 if (!this.onGame) return;
                 this.upScore();
+                this.sound.play('Correct');
             }, 400);
             setTimeout(() => {
                 if (!this.onGame) return;
@@ -330,11 +347,6 @@ gameScene.setHighScore = function (score) {
 
 gameScene.flashButtons = function () {    
     this.buttons.forEach(bt => {
-        //this.resetButtons(bt);
-        //this.animateButtonPulse(bt);
-        if (bt.twpulses.isPlaying()) {
-            bt.twpulses.stop();
-        }
 
         if (bt.tween.isPlaying()) {
             console.log('flash was playing')
@@ -347,11 +359,6 @@ gameScene.flashButtons = function () {
 
 gameScene.pulseButtons = function () {    
     this.buttons.forEach(bt => {
-        //this.resetButtons(bt);
-
-        if (bt.tween.isPlaying()) {
-            bt.tween.stop();
-        }
         if (bt.twpulses.isPlaying()) {
             console.log('pulses was playing')
             bt.twpulses.restart();
@@ -360,12 +367,6 @@ gameScene.pulseButtons = function () {
             bt.twpulses.play();   
         }        
     });
-}
-
-gameScene.resetButtons = function (bt) {    
-        //bt.tween.stop();
-       // bt.twpulses.stop();
-        bt.alpha = 0.1;
 }
 
 gameScene.turnOnLed = function (led) {
@@ -379,36 +380,3 @@ gameScene.turnOffLed = function (led) {
 gameScene.pulseLed = function (led) {
     led.twLedPulses.play();
 }
-
-gameScene.animateButton = function (bt) {
-    console.log('Play Animation');
-    // Define the initial and target alpha values
-let initialAlpha = 0.1;
-let targetAlpha = 1;
-let increment = (targetAlpha - initialAlpha) / 300; // Increment for each step
-
-// Manually change alpha over a period of time
-let interval = setInterval(() => {
-    bt.setAlpha(Math.min(bt.alpha + increment, targetAlpha)); // Incrementally change alpha
-    if (bt.alpha >= targetAlpha) {
-        clearInterval(interval); // Stop the interval when reaching the target alpha
-    }
-}, 1); // Adjust the interval duration as needed
-}
-
-gameScene.animateButtonPulse = function (bt) {
-    let initialAlpha = 0.1;
-    let targetAlpha = 1;
-    let increment = (targetAlpha - initialAlpha) / 300; // Increment for each step
-    let iterations = 3; // Number of iterations
-
-    let interval = setInterval(() => {
-        bt.setAlpha(Math.min(bt.alpha + increment, targetAlpha)); // Incrementally change alpha
-
-        if (bt.alpha >= targetAlpha) {
-            increment = (initialAlpha - bt.alpha) / 300; // Change direction when reaching the target alpha
-        } else if (bt.alpha <= initialAlpha) {
-            clearInterval(interval); // Stop the interval when reaching the initial alpha
-        }
-    }, 0.1); // Adjust the interval duration as needed
-};
