@@ -69,7 +69,7 @@ gameScene.create = function () {
 
 gameScene.createScene = function () {
     let bgImage = this.s > 1 ? 'bg2' : 'bg';
-    let spriteScale = this.s > 1 ? 1.125 : 0.45;
+    let spriteScale = this.s > 1 ? 1.125 : 0.5625;
     let xLeft = 131;
     let xRight = 270;
     let yTop = 106;
