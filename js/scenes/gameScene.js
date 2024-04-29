@@ -6,15 +6,15 @@ gameScene.init = function () {
     this.gWidth = this.game.config.width;
     this.gHeight = this.game.config.height;
     this.s = this.gWidth > 640 ? 2 : 1;
-
-    if (this.sys.game.device.os.desktop) {
-        console.log("desktop")
-        this.s = 2;
-    }
-    else {
-        console.log("mobile")
-        this.s = 1;
-    }
+    console.log(this.gWidth, this.gHeight, this.s)
+    // if (this.sys.game.device.os.desktop) {
+    //     console.log("desktop")
+    //     this.s = 2;
+    // }
+    // else {
+    //     console.log("mobile")
+    //     this.s = 1;
+    // }
 
     this.notes = [0];
     this.noteIndex = 0;
@@ -110,6 +110,7 @@ gameScene.createScene = function () {
         return sprite;
     });
 
+    this.disableButtons();
 }
 
 gameScene.createText = function () {
