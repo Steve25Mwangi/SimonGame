@@ -144,7 +144,7 @@ gameScene.createText = function () {
 }
 
 gameScene.createBtns = function () {
-    this.btnPlay = this.add.sprite(500 * this.s, 100 * this.s, 'btplay').setInteractive();
+    this.btnPlay = this.add.sprite(500 * this.s, 50 * this.s, 'btplay').setInteractive();
     this.btnPlay.setScale(0.08 * this.s);
     this.btnPlay.on('pointerdown', () => {
         if (!this.onGame) {
