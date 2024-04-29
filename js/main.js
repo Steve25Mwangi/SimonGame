@@ -7,7 +7,8 @@ function runGame(width, height) {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
       width: width,
-      height: height
+      height: height,
+      orientation: Phaser.Scale.LANDSCAPE
   },
     scene: gameScene,
     debug: true
