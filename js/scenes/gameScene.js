@@ -2,11 +2,14 @@
 let gameScene = new Phaser.Scene('MainGame');
 
 // some parameters for our scene
-gameScene.init = function () {
+gameScene.init = function (data) {
+
+    this.data = data.level;
+
     this.gWidth = this.game.config.width;
     this.gHeight = this.game.config.height;
     this.s = this.gWidth > 640 ? 2 : 1;
-   // console.log(this.gWidth, this.gHeight, this.s)
+    // console.log(this.gWidth, this.gHeight, this.s)
     // if (this.sys.game.device.os.desktop) {
     //     console.log("desktop")
     //     this.s = 2;
@@ -23,16 +26,37 @@ gameScene.init = function () {
     this.score = 0;
     this.highScore = 0;
     this.onGame = false;
+
+    this.initialGameSpeed = 600;
+    this.initialTweenSpeed = 250;
+    this.gameSpeed = 600;
+    this.tweenSpeed = 250;
+
+    this.buttonsLength = 12;
+
+    this.levelType = ['easy', 'medium', 'hard'];
+
+    this.levelLength = 5;
+
+    //this.reverseMode = true;
 };
 
 gameScene.preload = function () {
 
     this.load.image('bg', 'assets/images/BgSmall.png');
     this.load.image('bg2', 'assets/images/BgBig.png');
+    this.load.image('bgLvl2', 'assets/images/BgSmallLvl02.png');
+    this.load.image('bgLvl2Big', 'assets/images/BgBigLvl02.png');
+    this.load.image('bgLvl3', 'assets/images/BgSmallLvl03.png');
+    this.load.image('bgLvl3Big', 'assets/images/BgBigLvl03.png');
     this.load.image('Armando', 'assets/images/Armando00.png');
     this.load.image('Frank', 'assets/images/Frank00.png');
     this.load.image('Sophia', 'assets/images/Sophia00.png');
     this.load.image('Timmy', 'assets/images/Timmy00.png');
+    this.load.image('Armando1', 'assets/images/Armando01.png');
+    this.load.image('Frank1', 'assets/images/Frank01.png');
+    this.load.image('Sophia1', 'assets/images/Sophia01.png');
+    this.load.image('Timmy1', 'assets/images/Timmy01.png');
     this.load.image('btplay', 'assets/images/Forward.png');
     this.load.image('btreset', 'assets/images/Retry.png');
     this.load.image('ledGreen', 'assets/images/ledGreen.png');
@@ -50,11 +74,22 @@ gameScene.preload = function () {
 };
 
 gameScene.create = function () {
-
-
-    //addBG
-    this.createScene();
-
+    console.log(this.data);
+    switch (this.data) {
+        case null:
+            this.createScene();
+            break;
+        case 'medium':
+            this.createLevel03();
+            break;
+        case 'hard':
+            this.createLevel02();
+            break;
+        default:
+            //console.log('Problemas');
+            this.createScene();
+            break;
+    }
     //create Text
     this.createText();
 
@@ -68,6 +103,8 @@ gameScene.create = function () {
 };
 
 gameScene.createScene = function () {
+
+    this.buttonsLength = 4;
     let bgImage = this.s > 1 ? 'bg2' : 'bg';
     let spriteScale = this.s > 1 ? 1.125 : 0.5625;
     let xLeft = 131;
@@ -86,7 +123,7 @@ gameScene.createScene = function () {
             targets: sprite,
             alpha: '1',
             yoyo: true,
-            duration: 250,
+            duration: this.tweenSpeed,
             ease: 'Cubic',
             paused: true,
             persist: true
@@ -96,7 +133,7 @@ gameScene.createScene = function () {
             targets: sprite,
             alpha: '1',
             yoyo: true,
-            duration: 250,
+            duration: this.tweenSpeed,
             repeat: 3,
             ease: 'Cubic',
             paused: true,
@@ -111,6 +148,152 @@ gameScene.createScene = function () {
     });
 
     this.disableButtons();
+    //fade in camera
+    this.cameras.main.fadeIn(500, 0, 0, 0);
+
+    this.cameras.main.on('camerafadeincomplete', function () {
+        // Remove the effect after the fade-in is complete
+        this.cameras.main.fadeEffect.reset();
+    }, this);
+}
+
+gameScene.createLevel02 = function () {
+
+    this.buttonsLength = 12;
+    let bgImage = this.s > 1 ? 'bgLvl2Big' : 'bgLvl2';
+    let spriteScale = this.s > 1 ? 0.6 : 0.3;
+    let xLeft = 163;
+    let xRight = 236;
+    let yTop = 132;
+    let yBottom = 210;
+
+
+    let xLeftLvl2 = 100;
+    let xRightLvl2 = 299;
+    let yTopLvl2 = 83;
+    let yBottomLvl2 = 259;
+
+    let xMidLvl3 = 199;
+    let yTopLvl3 = 53;
+    let yMidLvl3 = 170;
+    let yBottomLvl3 = 295;
+
+
+    let bg = this.add.image(0, 0, bgImage).setOrigin(0);
+    let spriteImages = ['Timmy', 'Sophia', 'Frank', 'Armando', 'Timmy1', 'Sophia1', 'Frank1', 'Armando1'];
+    let spritePositions = [[xLeft * this.s, yTop * this.s], [xRight * this.s, yTop * this.s], [xLeft * this.s, yBottom * this.s], [xRight * this.s, yBottom * this.s],
+    [xLeftLvl2 * this.s, yTopLvl2 * this.s], [xRightLvl2 * this.s, yTopLvl2 * this.s], [xLeftLvl2 * this.s, yBottomLvl2 * this.s], [xRightLvl2 * this.s, yBottomLvl2 * this.s],
+    [xLeftLvl2 * this.s, yMidLvl3 * this.s], [xMidLvl3 * this.s, yTopLvl3 * this.s], [xMidLvl3 * this.s, yBottomLvl3 * this.s], [xRightLvl2 * this.s, yMidLvl3 * this.s]];
+
+    spritePositions = this.shuffleArray(spritePositions);
+
+    this.buttons = [];
+    for (let i = 0; i < this.buttonsLength; i++) {
+        let sprite = this.add.sprite(spritePositions[i][0], spritePositions[i][1], spriteImages[i % spriteImages.length])
+            .setOrigin(0.5).setScale(spriteScale).setAlpha(0.1);
+
+        sprite.tween = this.tweens.add({
+            targets: sprite,
+            alpha: '1',
+            yoyo: true,
+            duration: this.tweenSpeed,
+            ease: 'Cubic',
+            paused: true,
+            persist: true
+        });
+
+        sprite.twpulses = this.tweens.add({
+            targets: sprite,
+            alpha: '1',
+            yoyo: true,
+            duration: this.tweenSpeed,
+            repeat: 3,
+            ease: 'Cubic',
+            paused: true,
+            persist: true
+        })
+
+        sprite.setInteractive().on('pointerdown', () => {
+            this.clicked(false, i);
+        });
+
+        this.buttons.push(sprite);
+    }
+
+    this.disableButtons();
+}
+
+gameScene.createLevel03 = function () {
+    this.buttonsLength = 8;
+    let bgImage = this.s > 1 ? 'bgLvl3Big' : 'bgLvl3';
+    let spriteScale = this.s > 1 ? 0.6 : 0.3;
+    let xLeft = 163;
+    let xRight = 236;
+    let yTop = 132;
+    let yBottom = 210;
+
+
+    let xLeftLvl2 = 100;
+    let xRightLvl2 = 299;
+    let yTopLvl2 = 83;
+    let yBottomLvl2 = 259;
+
+    let xMidLvl3 = 199;
+    let yTopLvl3 = 53;
+    let yMidLvl3 = 170;
+    let yBottomLvl3 = 295;
+
+
+    let bg = this.add.image(0, 0, bgImage).setOrigin(0);
+    let spriteImages = ['Timmy', 'Sophia', 'Frank', 'Armando', 'Timmy1', 'Sophia1', 'Frank1', 'Armando1'];
+    let spritePositions = [[xLeft * this.s, yTop * this.s], [xRight * this.s, yTop * this.s], [xLeft * this.s, yBottom * this.s], [xRight * this.s, yBottom * this.s],
+    [xLeftLvl2 * this.s, yMidLvl3 * this.s], [xMidLvl3 * this.s, yTopLvl3 * this.s], [xMidLvl3 * this.s, yBottomLvl3 * this.s], [xRightLvl2 * this.s, yMidLvl3 * this.s]];
+    //[xLeftLvl2 * this.s, yMidLvl3 * this.s], [xMidLvl3 * this.s, yTopLvl3 * this.s], [xMidLvl3 * this.s, yBottomLvl3 * this.s], [xRightLvl2 * this.s, yMidLvl3 * this.s]];
+
+    spritePositions = this.shuffleArray(spritePositions);
+
+    this.buttons = [];
+    for (let i = 0; i < this.buttonsLength; i++) {
+        let sprite = this.add.sprite(spritePositions[i][0], spritePositions[i][1], spriteImages[i % spriteImages.length])
+            .setOrigin(0.5).setScale(spriteScale).setAlpha(0.1);
+
+        sprite.tween = this.tweens.add({
+            targets: sprite,
+            alpha: '1',
+            yoyo: true,
+            duration: this.tweenSpeed,
+            ease: 'Cubic',
+            paused: true,
+            persist: true
+        });
+
+        sprite.twpulses = this.tweens.add({
+            targets: sprite,
+            alpha: '1',
+            yoyo: true,
+            duration: this.tweenSpeed,
+            repeat: 3,
+            ease: 'Cubic',
+            paused: true,
+            persist: true
+        })
+
+        sprite.setInteractive().on('pointerdown', () => {
+            this.clicked(false, i);
+        });
+
+        this.buttons.push(sprite);
+    }
+
+    this.disableButtons();
+}
+
+gameScene.shuffleArray = function (array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 
 gameScene.createText = function () {
@@ -156,6 +339,14 @@ gameScene.createBtns = function () {
         else {
             this.endGame();
         }
+    });
+
+
+    this.hintBtn = this.add.sprite(450 * this.s, 340 * this.s, 'btplay').setInteractive();
+    this.hintBtn.setScale(0.08 * this.s);
+    this.hintBtn.on('pointerdown', () => {
+        this.currentNote = 0;
+        this.playNotes();
     });
 
     // this.btnReset = this.add.sprite(281 * this.s, 565 * this.s, 'btreset').setInteractive();
@@ -224,11 +415,15 @@ gameScene.initGame = function () {
 }
 
 gameScene.endGame = function () {
+
+    this.gameSpeed = this.initialGameSpeed;
+    this.tweenSpeed = this.initialTweenSpeed;
+
     let t = this;
     t.onGame = false;
     t.disableButtons();
     //t.pulseLed(this.ledGameOver);
-    t.notes = [Phaser.Math.RND.integerInRange(0, 3)];
+    t.notes = [Phaser.Math.RND.integerInRange(0, this.buttonsLength - 1)];
     t.pulseButtons();
 
     setTimeout(() => {
@@ -262,7 +457,7 @@ gameScene.playNotes = function () {
 
         this.sound.play('Reset');
         flashButtons();
-       // turnOffLed();
+        // turnOffLed();
         //turnOnLed();
         playerTurn();
     } else {
@@ -272,8 +467,61 @@ gameScene.playNotes = function () {
 
 gameScene.machineTurn = function () {
     this.disableButtons();
+
+
+    // speed manipulation
+    const baseGameSpeedReduction = 75;
+    const baseTweenSpeedReduction = 15;
+
+    this.gameSpeed -= baseGameSpeedReduction;
+    this.tweenSpeed -= baseTweenSpeedReduction;
+
+    console.log(this.notes.length, this.gameSpeed)
+
+    if (this.notes.length > this.levelLength) {
+
+        switch (this.data) {
+            case 'easy':
+                //fade camera to black
+                this.cameras.main.fadeOut(500);
+                //change scene after fade out
+                this.cameras.main.on('camerafadeoutcomplete', function (camera, effect) {
+                    
+                    this.scene.start('MainGame', { level: "medium" });
+                }, this);
+                break;
+            case 'medium':
+                //fade camera to black
+                this.cameras.main.fadeOut(500);
+                //change scene after fade out
+                this.cameras.main.on('camerafadeoutcomplete', function (camera, effect) {
+                    
+                    this.scene.start('MainGame', { level: "hard" });
+                }, this);
+                break;
+            case 'hard':
+                //fade camera to black
+                this.cameras.main.fadeOut(500);
+                //change scene after fade out
+                this.cameras.main.on('camerafadeoutcomplete', function (camera, effect) {
+                    
+                    this.scene.start('MainGame', { level: "easy" });
+                }, this);
+                break;
+            default:
+                //fade camera to black
+                this.cameras.main.fadeOut(500);
+                //change scene after fade out
+                this.cameras.main.on('camerafadeoutcomplete', function (camera, effect) {
+                    
+                    this.scene.start('MainGame', { level: "medium" });
+                }, this);
+                break;
+        }
+        return;
+    }
     this.currentNote = 0;
-    this.notes.push(Phaser.Math.RND.integerInRange(0, 3));
+    this.notes.push(Phaser.Math.RND.integerInRange(0, this.buttonsLength - 1));
     setTimeout(() => {
         this.playNotes();
     }, 1000);
@@ -298,7 +546,7 @@ gameScene.disableButtons = function () {
 };
 
 gameScene.clicked = function (isMachine, index) {
-
+    console.log(index);
     this.lastNote = index;
     if (this.buttons[index].tween.isPlaying()) {
         this.buttons[index].tween.restart();
@@ -306,24 +554,31 @@ gameScene.clicked = function (isMachine, index) {
         this.buttons[index].tween.play();
     }
     if (isMachine) {
-        this.sound.play('Pad' + (index + 1));
+        let soundIndex = ((index + 1) % 4) === 0 ? 4 : ((index + 1) % 4);
+        this.sound.play('Pad' + soundIndex);
         setTimeout(() => {
             if (!this.onGame) return;
 
             this.currentNote++;
             this.playNotes();
-        }, 600);
+        }, this.gameSpeed);
     }
     else {
         if (!this.checkNote()) {
             this.sound.play('Wrong');
-           // this.turnOffLed(this.ledPlayer);
+            // this.turnOffLed(this.ledPlayer);
             this.endGame();
             return;
         }
-
-        this.sound.play('Pad' + (index + 1));
-        this.noteIndex++;
+        let soundIndex = ((index + 1) % 4) === 0 ? 4 : ((index + 1) % 4);
+        this.sound.play('Pad' + soundIndex);
+        //console.log(this.reverseMode)
+        if (this.reverseMode) {
+            this.noteIndex--; // Decrement noteIndex for reverse mode
+        } else {
+            this.noteIndex++; // Increment noteIndex for normal mode
+        }
+        console.log(this.noteIndex + '_' + this.notes.length)
         if (this.noteIndex > this.notes.length - 1) {
             this.disableButtons();
             setTimeout(() => {
@@ -333,7 +588,7 @@ gameScene.clicked = function (isMachine, index) {
             }, 400);
             setTimeout(() => {
                 if (!this.onGame) return;
-               // this.turnOffLed(this.ledPlayer);
+                // this.turnOffLed(this.ledPlayer);
                 //this.turnOnLed(this.ledCpu);
                 this.machineTurn();
             }, 600);
@@ -363,7 +618,7 @@ gameScene.setHighScore = function (score) {
 gameScene.flashButtons = function () {
     this.buttons.forEach(bt => {
         if (bt.tween.isPlaying()) {
-            console.log('flash was playing')
+            // console.log('flash was playing')
             bt.tween.restart();
         } else {
             bt.tween.play();
